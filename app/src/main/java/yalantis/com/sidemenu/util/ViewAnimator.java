@@ -195,4 +195,8 @@ public class ViewAnimator<T extends Resourceble> {
             imageView.setImageResource(resourceble.getImageRes());
         }
     }
+
+    public ScreenShotable getScreenShotable(){
+       return this.screenShotable;
+    }
 }

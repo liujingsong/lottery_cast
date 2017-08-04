@@ -9,6 +9,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.LayoutAnimationController;
 
@@ -17,6 +18,7 @@ import com.cast.lottery.lotterycast.adapter.HistoryDetailAdapter;
 import com.cast.lottery.lotterycast.data.LotteryServiceManager;
 import com.cast.lottery.lotterycast.models.LotteryHistory;
 import com.cast.lottery.lotterycast.utils.LotteryUtils;
+import com.github.ybq.android.spinkit.SpinKitView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +35,7 @@ public class HistoryDetailActivity extends AppCompatActivity {
     private String lotId;
     private List<LotteryHistory.ListEntity> hList = new ArrayList<>();
     private HistoryDetailAdapter historyDetailAdapter;
-
+    SpinKitView spn_kit;
     public static void start(Context context, String lotId) {
         Bundle b = new Bundle();
         b.putString("id", lotId);
@@ -47,6 +49,7 @@ public class HistoryDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.history_detail);
         setActionBar();
+        spn_kit = (SpinKitView) findViewById(R.id.spin_kit);
         RecyclerView recyclerView = (RecyclerView)findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         historyDetailAdapter = new HistoryDetailAdapter(hList, lotId);
@@ -75,19 +78,21 @@ public class HistoryDetailActivity extends AppCompatActivity {
     }
 
     public void fetchData(final String lotId,final String page) {
+        spn_kit.setVisibility(View.VISIBLE);
         LotteryServiceManager.getInstance().getHistory360(new Subscriber<LotteryHistory>() {
             @Override
             public void onCompleted() {
-
+                spn_kit.setVisibility(View.GONE);
             }
 
             @Override
             public void onError(Throwable e) {
-
+                spn_kit.setVisibility(View.GONE);
             }
 
             @Override
             public void onNext(LotteryHistory h) {
+                spn_kit.setVisibility(View.GONE);
                 hList.clear();
                 hList.addAll(h.getList());
                 historyDetailAdapter.notifyDataSetChanged();

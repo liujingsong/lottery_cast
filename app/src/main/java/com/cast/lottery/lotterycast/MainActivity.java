@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
     private ImageButton btnRefresh;
     List<Lottery.IEntity> data = new ArrayList<>();
 
-    public synchronized List<Lottery.IEntity> getData(){
+    public synchronized List<Lottery.IEntity> getData() {
         return data;
     }
 
@@ -54,11 +54,7 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        BaseContentFragment defaultContent = getFragment(LatestFragment.class.getName());
-
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.content_frame, defaultContent)
-                .commit();
+        BaseContentFragment defaultContent = showDefaultFragment();
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawerLayout.setScrimColor(Color.TRANSPARENT);
         linearLayout = (LinearLayout) findViewById(R.id.left_drawer);
@@ -74,6 +70,14 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
         setActionBar();
         createMenuList();
         viewAnimator = new ViewAnimator<>(this, list, defaultContent, drawerLayout, this);
+    }
+
+    private BaseContentFragment showDefaultFragment() {
+        BaseContentFragment defaultContent = getFragment(LatestFragment.class.getName());
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.content_frame, defaultContent)
+                .commit();
+        return defaultContent;
     }
 
 
@@ -146,8 +150,6 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
     }
 
 
-
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (drawerToggle.onOptionsItemSelected(item)) {
@@ -156,7 +158,7 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
         return super.onOptionsItemSelected(item);
     }
 
-    private ScreenShotable replaceFragment(BaseContentFragment foreground,ScreenShotable background, int topPosition) {
+    private ScreenShotable replaceFragment(BaseContentFragment foreground, ScreenShotable background, int topPosition) {
 
         View view = findViewById(R.id.content_frame);
         int finalRadius = Math.max(view.getWidth(), view.getHeight());
@@ -167,11 +169,11 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
         findViewById(R.id.content_overlay).setBackgroundDrawable(new BitmapDrawable(getResources(), background.getBitmap()));
         animator.start();
 
-        getSupportFragmentManager().beginTransaction().replace(R.id.content_frame,  foreground).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, foreground).commit();
         return foreground;
     }
 
-    private HashMap<String,BaseContentFragment> fragments = new HashMap<>();
+    private HashMap<String, BaseContentFragment> fragments = new HashMap<>();
 
     @Override
     public ScreenShotable onSwitch(Resourceble slideMenuItem, ScreenShotable screenShotable, int position) {
@@ -179,23 +181,23 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
             case BaseContentFragment.CLOSE:
                 return screenShotable;
             case BaseContentFragment.LATEST:
-                return replaceFragment(getFragment(LatestFragment.class.getName()),screenShotable, position);
+                return replaceFragment(getFragment(LatestFragment.class.getName()), screenShotable, position);
             case BaseContentFragment.HISTORY:
-                return replaceFragment(getFragment(HistoryFragment.class.getName()),screenShotable, position);
+                return replaceFragment(getFragment(HistoryFragment.class.getName()), screenShotable, position);
             default:
                 return screenShotable;
         }
     }
 
-    private BaseContentFragment getFragment(String key){
+    private BaseContentFragment getFragment(String key) {
         BaseContentFragment baseContentFragment = fragments.get(key);
-        if(baseContentFragment == null){
+        if (baseContentFragment == null) {
             try {
                 baseContentFragment = (BaseContentFragment) Class.forName(key).newInstance();
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            fragments.put(key,baseContentFragment);
+            fragments.put(key, baseContentFragment);
         }
         return baseContentFragment;
     }
@@ -219,17 +221,25 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
     }
 
 
-
-    public void setOnRefreshListener(){
+    public void setOnRefreshListener() {
         btnRefresh = (ImageButton) findViewById(R.id.btn_refresh);
         btnRefresh.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                RotateAnimation ra = new RotateAnimation(0,720, Animation.RELATIVE_TO_SELF,0.5f,Animation.RELATIVE_TO_SELF,0.5f);
+                RotateAnimation ra = new RotateAnimation(0, 720, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
                 ra.setDuration(2000l);
                 v.startAnimation(ra);
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (viewAnimator.getScreenShotable() instanceof LatestFragment) {
+            finish();
+        } else {
+            showDefaultFragment();
+        }
     }
 }
