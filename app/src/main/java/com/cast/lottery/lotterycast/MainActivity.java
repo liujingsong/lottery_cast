@@ -10,20 +10,23 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
+import android.view.animation.Animation;
+import android.view.animation.RotateAnimation;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.cast.lottery.lotterycast.fragment.BaseContentFragment;
 import com.cast.lottery.lotterycast.fragment.HistoryFragment;
 import com.cast.lottery.lotterycast.fragment.LatestFragment;
+import com.cast.lottery.lotterycast.models.Lottery;
 import com.github.ybq.android.spinkit.SpinKitView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import io.codetail.animation.ViewAnimationUtils;
@@ -40,13 +43,18 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
     private ViewAnimator viewAnimator;
     private LinearLayout linearLayout;
     private SpinKitView skv;
+    private ImageButton btnRefresh;
+    List<Lottery.IEntity> data = new ArrayList<>();
 
+    public synchronized List<Lottery.IEntity> getData(){
+        return data;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        BaseContentFragment defaultContent = LatestFragment.newInstance();
+        BaseContentFragment defaultContent = getFragment(LatestFragment.class.getName());
 
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.content_frame, defaultContent)
@@ -62,11 +70,12 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
         });
 
         skv = (SpinKitView) findViewById(R.id.spin_kit);
-
+        setOnRefreshListener();
         setActionBar();
         createMenuList();
         viewAnimator = new ViewAnimator<>(this, list, defaultContent, drawerLayout, this);
     }
+
 
     private void createMenuList() {
         SlideMenuItem menuItem0 = new SlideMenuItem(BaseContentFragment.CLOSE, R.drawable.icn_close);
@@ -75,7 +84,7 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
         list.add(menuItem);
         SlideMenuItem menuItem2 = new SlideMenuItem(BaseContentFragment.HISTORY, buildTextMenuItem("历史"));
         list.add(menuItem2);
-        SlideMenuItem menuItem3 = new SlideMenuItem(BaseContentFragment.DETAIL, buildTextMenuItem("分析"));
+        SlideMenuItem menuItem3 = new SlideMenuItem(BaseContentFragment.NEWS, buildTextMenuItem("相关"));
         list.add(menuItem3);
     }
 
@@ -162,18 +171,33 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
         return foreground;
     }
 
+    private HashMap<String,BaseContentFragment> fragments = new HashMap<>();
+
     @Override
     public ScreenShotable onSwitch(Resourceble slideMenuItem, ScreenShotable screenShotable, int position) {
         switch (slideMenuItem.getName()) {
             case BaseContentFragment.CLOSE:
                 return screenShotable;
             case BaseContentFragment.LATEST:
-                return replaceFragment(LatestFragment.newInstance(),screenShotable, position);
+                return replaceFragment(getFragment(LatestFragment.class.getName()),screenShotable, position);
             case BaseContentFragment.HISTORY:
-                return replaceFragment(HistoryFragment.newInstance(),screenShotable, position);
+                return replaceFragment(getFragment(HistoryFragment.class.getName()),screenShotable, position);
             default:
                 return screenShotable;
         }
+    }
+
+    private BaseContentFragment getFragment(String key){
+        BaseContentFragment baseContentFragment = fragments.get(key);
+        if(baseContentFragment == null){
+            try {
+                baseContentFragment = (BaseContentFragment) Class.forName(key).newInstance();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            fragments.put(key,baseContentFragment);
+        }
+        return baseContentFragment;
     }
 
     @Override
@@ -192,5 +216,20 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
     @Override
     public void addViewToContainer(View view) {
         linearLayout.addView(view);
+    }
+
+
+
+    public void setOnRefreshListener(){
+        btnRefresh = (ImageButton) findViewById(R.id.btn_refresh);
+        btnRefresh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                RotateAnimation ra = new RotateAnimation(0,720, Animation.RELATIVE_TO_SELF,0.5f,Animation.RELATIVE_TO_SELF,0.5f);
+                ra.setDuration(2000l);
+                v.startAnimation(ra);
+            }
+        });
     }
 }

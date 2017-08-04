@@ -6,15 +6,16 @@
     android:layout_height="match_parent">
 
     <FrameLayout
+        android:background="@color/grey1"
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <include layout="@layout/fragment_latest_list"></include>
+        <include layout="@layout/latest_list_view"></include>
 
         <com.github.ybq.android.spinkit.SpinKitView
-
             android:id="@+id/spin_kit"
+            android:visibility="gone"
             style="@style/SpinKitView.Large.Circle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

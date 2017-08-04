@@ -32,10 +32,10 @@
         <ImageButton
             android:id="@+id/btn_refresh"
             android:background="@null"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="14dp"
             android:layout_marginRight="10dp"
             android:layout_gravity="top|right"
-            android:src="@android:drawable/ic_menu_rotate"
+            android:src="@drawable/ic_refresh"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 

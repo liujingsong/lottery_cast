@@ -16,11 +16,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.amulyakhare.textdrawable.TextDrawable;
+import com.cast.lottery.lotterycast.MainActivity;
 import com.cast.lottery.lotterycast.R;
 import com.cast.lottery.lotterycast.data.LotteryServiceManager;
 import com.cast.lottery.lotterycast.models.Lottery;
 import com.cast.lottery.lotterycast.utils.LotteryUtils;
 import com.cast.lottery.lotterycast.widgets.KJLineItemView;
+import com.github.ybq.android.spinkit.SpinKitView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +35,7 @@ import rx.Subscriber;
 
 public class LatestFragment extends BaseContentFragment {
     private LatestLotteryAdapter latestLotteryAdapter;
+    private SpinKitView spn_kit;
 
     public LatestFragment(){
 
@@ -41,13 +44,17 @@ public class LatestFragment extends BaseContentFragment {
     public static BaseContentFragment newInstance() {
         return new LatestFragment();
     }
-    List<Lottery.IEntity> data = new ArrayList<>();
+
 
     @Override
     public void onResume() {
         super.onResume();
-        fetchData();
+        if(getData().size() == 0) {
+            fetchData();
+        }
     }
+
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -56,28 +63,30 @@ public class LatestFragment extends BaseContentFragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         latestLotteryAdapter = new LatestLotteryAdapter();
         recyclerView.setAdapter(latestLotteryAdapter);
-
+        spn_kit = (SpinKitView) rootView.findViewById(R.id.spin_kit);
         return rootView;
     }
 
     public void fetchData(){
+        spn_kit.setVisibility(View.VISIBLE);
         LotteryServiceManager.getInstance().getLastData360(new Subscriber<List<Lottery.IEntity>>() {
             @Override
             public void onCompleted() {
-
+                spn_kit.setVisibility(View.GONE);
             }
 
             @Override
             public void onError(Throwable e) {
-
+                spn_kit.setVisibility(View.GONE);
             }
 
             @Override
             public void onNext(List<Lottery.IEntity> list) {
                 Log.d("getLastData360",list.toString());
-                data.clear();
-                data.addAll(list);
+                getData().clear();
+                getData().addAll(list);
                 latestLotteryAdapter.notifyDataSetChanged();
+                spn_kit.setVisibility(View.GONE);
             }
         });
     }
@@ -96,7 +105,7 @@ public class LatestFragment extends BaseContentFragment {
 
         @Override
         public void onBindViewHolder(LastLotteryHolder holder, int pos) {
-            Lottery.IEntity iEntity = LatestFragment.this.data.get(pos);
+            Lottery.IEntity iEntity = LatestFragment.this.getData().get(pos);
 
             holder.name.setImageDrawable(buildItemNameDrawable(iEntity.getLotName()));
             holder.phase.setText("第" + iEntity.getIssue() + "期");
@@ -110,7 +119,7 @@ public class LatestFragment extends BaseContentFragment {
 
         @Override
         public int getItemCount() {
-            return data.size();
+            return getData().size();
         }
     }
 
@@ -150,5 +159,9 @@ public class LatestFragment extends BaseContentFragment {
                 .toUpperCase()
                 .endConfig()
                 .buildRound(text, getContext().getResources().getColor(R.color.color_ffca28));
+    }
+    @Override
+    public void onRefresh(){
+        fetchData();
     }
 }

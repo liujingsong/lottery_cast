@@ -10,4 +10,6 @@ public interface ScreenShotable {
      void takeScreenShot();
 
      Bitmap getBitmap();
+
+     void onRefresh();
 }
