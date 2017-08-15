@@ -1,6 +1,7 @@
 package com.cast.lottery.lotterycast.activity;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -19,6 +20,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
 
+import com.cast.lottery.lotterycast.MainActivity;
 import com.cast.lottery.lotterycast.R;
 import com.cast.lottery.lotterycast.data.WebManager;
 import com.tmall.ultraviewpager.UltraViewPager;
@@ -66,6 +68,9 @@ public class SplashActivity extends Activity {
                     webview.setWebViewClient(new WebViewClient());
                     webview.setWebChromeClient(new WebChromeClient());
                     webview.loadUrl((String) data.get("url"));
+                }else {
+                    Intent intent = new Intent(SplashActivity.this, MainActivity.class);
+                    startActivity(intent);
                 }
             }
         },"201772609");
