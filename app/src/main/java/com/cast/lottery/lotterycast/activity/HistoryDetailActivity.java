@@ -10,12 +10,12 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.AccelerateInterpolator;
-import android.view.animation.LayoutAnimationController;
 
 import com.cast.lottery.lotterycast.R;
 import com.cast.lottery.lotterycast.adapter.HistoryDetailAdapter;
 import com.cast.lottery.lotterycast.data.LotteryServiceManager;
+import com.cast.lottery.lotterycast.listener.RecyclerItemClickListener;
+import com.cast.lottery.lotterycast.models.LotteryDetail;
 import com.cast.lottery.lotterycast.models.LotteryHistory;
 import com.cast.lottery.lotterycast.utils.LotteryUtils;
 import com.github.ybq.android.spinkit.SpinKitView;
@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import rx.Subscriber;
-import yalantis.com.sidemenu.animation.FlipAnimation;
 
 /**
  * Created by Kevin on 2017/8/4.
@@ -36,6 +35,8 @@ public class HistoryDetailActivity extends AppCompatActivity {
     private List<LotteryHistory.ListEntity> hList = new ArrayList<>();
     private HistoryDetailAdapter historyDetailAdapter;
     SpinKitView spn_kit;
+    private KJDetailDialog kjDetailDialog;
+
     public static void start(Context context, String lotId) {
         Bundle b = new Bundle();
         b.putString("id", lotId);
@@ -48,7 +49,7 @@ public class HistoryDetailActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.history_detail);
-        setActionBar();
+
         spn_kit = (SpinKitView) findViewById(R.id.spin_kit);
         RecyclerView recyclerView = (RecyclerView)findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -59,13 +60,50 @@ public class HistoryDetailActivity extends AppCompatActivity {
             lotId = arguments.getString("id");
             fetchData(lotId,"1");
         }
-
+        setActionBar();
         recyclerView.setAdapter(historyDetailAdapter);
+        setOnItemClick(recyclerView);
+    }
+
+    private void setOnItemClick(RecyclerView recyclerView) {
+        recyclerView.addOnItemTouchListener(new RecyclerItemClickListener(this, recyclerView, new RecyclerItemClickListener.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                LotteryServiceManager.getInstance().getLotteryDetail(new Subscriber<LotteryDetail>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(LotteryDetail lotteryDetail) {
+                        if(kjDetailDialog ==null) {
+                            kjDetailDialog = new KJDetailDialog(HistoryDetailActivity.this);
+                        }
+                        kjDetailDialog.setLotteryDetailView(lotteryDetail);
+                        kjDetailDialog.bind();
+                        kjDetailDialog.setCanceledOnTouchOutside(false);
+                        kjDetailDialog.show();
+
+                    }
+                }, lotId, hList.get(position).getIssue());
+            }
+
+            @Override
+            public void onLongItemClick(View view, int position) {
+
+            }
+        }));
     }
 
     public void setActionBar(){
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle("");
+        toolbar.setTitle(LotteryUtils.getName(lotId));
         setSupportActionBar(toolbar);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

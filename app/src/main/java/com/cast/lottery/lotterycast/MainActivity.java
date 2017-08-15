@@ -19,6 +19,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
 import com.amulyakhare.textdrawable.TextDrawable;
+import com.cast.lottery.lotterycast.fragment.AboutFragment;
 import com.cast.lottery.lotterycast.fragment.BaseContentFragment;
 import com.cast.lottery.lotterycast.fragment.HistoryFragment;
 import com.cast.lottery.lotterycast.fragment.LatestFragment;
@@ -45,6 +46,7 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
     private SpinKitView skv;
     private ImageButton btnRefresh;
     List<Lottery.IEntity> data = new ArrayList<>();
+    private Toolbar toolbar;
 
     public synchronized List<Lottery.IEntity> getData() {
         return data;
@@ -54,7 +56,7 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        BaseContentFragment defaultContent = showDefaultFragment();
+
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawerLayout.setScrimColor(Color.TRANSPARENT);
         linearLayout = (LinearLayout) findViewById(R.id.left_drawer);
@@ -69,6 +71,8 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
         setOnRefreshListener();
         setActionBar();
         createMenuList();
+
+        BaseContentFragment defaultContent = showDefaultFragment();
         viewAnimator = new ViewAnimator<>(this, list, defaultContent, drawerLayout, this);
     }
 
@@ -77,6 +81,7 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.content_frame, defaultContent)
                 .commit();
+        toolbar.setTitle("最新开奖");
         return defaultContent;
     }
 
@@ -88,7 +93,7 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
         list.add(menuItem);
         SlideMenuItem menuItem2 = new SlideMenuItem(BaseContentFragment.HISTORY, buildTextMenuItem("历史"));
         list.add(menuItem2);
-        SlideMenuItem menuItem3 = new SlideMenuItem(BaseContentFragment.NEWS, buildTextMenuItem("相关"));
+        SlideMenuItem menuItem3 = new SlideMenuItem(BaseContentFragment.ABOUT, buildTextMenuItem("关于"));
         list.add(menuItem3);
     }
 
@@ -108,8 +113,8 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
 
 
     private void setActionBar() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle("");
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle("最新开奖");
         setSupportActionBar(toolbar);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -181,9 +186,14 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
             case BaseContentFragment.CLOSE:
                 return screenShotable;
             case BaseContentFragment.LATEST:
+                toolbar.setTitle("最新开奖");
                 return replaceFragment(getFragment(LatestFragment.class.getName()), screenShotable, position);
             case BaseContentFragment.HISTORY:
+                toolbar.setTitle("历史开奖");
                 return replaceFragment(getFragment(HistoryFragment.class.getName()), screenShotable, position);
+            case BaseContentFragment.ABOUT:
+                toolbar.setTitle("关于");
+                return replaceFragment(getFragment(AboutFragment.class.getName()),screenShotable,position);
             default:
                 return screenShotable;
         }

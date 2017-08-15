@@ -18,8 +18,12 @@ import android.widget.TextView;
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.cast.lottery.lotterycast.MainActivity;
 import com.cast.lottery.lotterycast.R;
+import com.cast.lottery.lotterycast.activity.HistoryDetailActivity;
+import com.cast.lottery.lotterycast.activity.KJDetailDialog;
 import com.cast.lottery.lotterycast.data.LotteryServiceManager;
+import com.cast.lottery.lotterycast.listener.RecyclerItemClickListener;
 import com.cast.lottery.lotterycast.models.Lottery;
+import com.cast.lottery.lotterycast.models.LotteryDetail;
 import com.cast.lottery.lotterycast.utils.LotteryUtils;
 import com.cast.lottery.lotterycast.widgets.KJLineItemView;
 import com.github.ybq.android.spinkit.SpinKitView;
@@ -36,6 +40,7 @@ import rx.Subscriber;
 public class LatestFragment extends BaseContentFragment {
     private LatestLotteryAdapter latestLotteryAdapter;
     private SpinKitView spn_kit;
+    private KJDetailDialog kjDetailDialog;
 
     public LatestFragment(){
 
@@ -64,6 +69,7 @@ public class LatestFragment extends BaseContentFragment {
         latestLotteryAdapter = new LatestLotteryAdapter();
         recyclerView.setAdapter(latestLotteryAdapter);
         spn_kit = (SpinKitView) rootView.findViewById(R.id.spin_kit);
+        setOnItemClick(recyclerView);
         return rootView;
     }
 
@@ -89,6 +95,42 @@ public class LatestFragment extends BaseContentFragment {
                 spn_kit.setVisibility(View.GONE);
             }
         });
+    }
+
+    private void setOnItemClick(RecyclerView recyclerView) {
+        recyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getActivity(), recyclerView, new RecyclerItemClickListener.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                LotteryServiceManager.getInstance().getLotteryDetail(new Subscriber<LotteryDetail>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(LotteryDetail lotteryDetail) {
+                        if(kjDetailDialog ==null) {
+                            kjDetailDialog = new KJDetailDialog(getActivity());
+                        }
+                        kjDetailDialog.setLotteryDetailView(lotteryDetail);
+                        kjDetailDialog.bind();
+                        kjDetailDialog.setCanceledOnTouchOutside(false);
+                        kjDetailDialog.show();
+
+                    }
+                }, LotteryUtils.getId(getData().get(position).getLotName()), getData().get(position).getIssue());
+            }
+
+            @Override
+            public void onLongItemClick(View view, int position) {
+
+            }
+        }));
     }
 
 
