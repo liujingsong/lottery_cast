@@ -18,7 +18,7 @@ android {
 
         manifestPlaceholders = [
                 JPUSH_PKGNAME: "com.cast.lottery.lotterycast",
-                JPUSH_APPKEY : "ab1dbdc5af5a36e27df5069c", //JPush上注册的包名对应的appkey.
+                JPUSH_APPKEY : "6518740e0ca22cd1d5e1b212", //JPush上注册的包名对应的appkey.
                 JPUSH_CHANNEL: "developer-default", //暂时填写默认值即可.
         ]
     }
@@ -43,6 +43,7 @@ dependencies {
     compile 'com.squareup.retrofit2:retrofit:2.1.0'
     compile 'com.squareup.retrofit2:converter-gson:2.1.0'
     compile 'com.squareup.retrofit2:adapter-rxjava:2.1.0'
+    compile 'com.squareup.okhttp3:logging-interceptor:3.4.1'
     compile 'com.squareup.picasso:picasso:2.5.2'
     /* optional */
     compile('com.github.ozodrukh:CircularReveal:2.0.1@aar') {
@@ -56,7 +57,6 @@ dependencies {
     implementation 'com.android.support:support-v4:25.0.0'
     implementation 'com.google.code.gson:gson:2.8.1'
     compile 'com.github.ybq:Android-SpinKit:1.1.0'
-
     compile 'cn.jiguang.sdk:jpush:3.0.8'
     compile 'cn.jiguang.sdk:jcore:1.1.6'
 }

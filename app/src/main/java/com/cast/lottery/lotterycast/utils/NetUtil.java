@@ -3,6 +3,7 @@ package com.cast.lottery.lotterycast.utils;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.widget.Toast;
 
 import com.cast.lottery.lotterycast.App;
 
@@ -24,7 +25,7 @@ public class NetUtil {
                 return true;
             }
         }
-
+        Toast.makeText(App.getAppContext(),"网络出问题啦~~",Toast.LENGTH_LONG).show();
         return false;
     }
 

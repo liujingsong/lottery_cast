@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">LotteryCast</string>
+    <string name="app_name">PC蛋蛋</string>
     <string name="action_refresh">Refresh</string>
     <string name="drawer_open">Open</string>
     <string name="drawer_close">Close</string>
@@ -110,5 +110,5 @@
     <string name="logining">程序在后台执行, 请查看日志！</string>
     <string name="setting_su">设置成功</string>
 
-    <string name="about_text">本APP是由</string>
+    <string name="about_text">PC蛋蛋，是一款专业的幸运28、加拿大28的预测查询APP，用户可以查询开奖历史记录，PC蛋蛋、幸运28、北京快乐8开奖走势预测，帮助PC28用户预测最精准的开奖结果</string>
 </resources>

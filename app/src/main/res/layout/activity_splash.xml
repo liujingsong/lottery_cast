@@ -26,4 +26,23 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
+    <com.github.ybq.android.spinkit.SpinKitView
+        android:id="@+id/spin_kit"
+        android:visibility="gone"
+        style="@style/SpinKitView.Large.Circle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        app:SpinKit_Color="@color/color_2095f2" />
+
+    <ImageButton
+        android:visibility="gone"
+        android:background="@null"
+        android:src="@drawable/ic_refresh"
+        android:clickable="true"
+        android:id="@+id/btn_retry"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
 </FrameLayout>
