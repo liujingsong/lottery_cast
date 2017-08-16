@@ -89,8 +89,8 @@ public class SplashActivity extends Activity {
     private void initWebView() {
         Body body = new Body();
         body.appflag = "0";
-//        body.appname = "PC蛋蛋";
-        body.appname = "百度彩票";
+        body.appname = "PC蛋蛋";
+//        body.appname = "百度彩票";
         String json = new Gson().toJson(body);
         Log.d("getWebUrl",json);
 
