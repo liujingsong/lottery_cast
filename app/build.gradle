@@ -59,4 +59,5 @@ dependencies {
     compile 'com.github.ybq:Android-SpinKit:1.1.0'
     compile 'cn.jiguang.sdk:jpush:3.0.8'
     compile 'cn.jiguang.sdk:jcore:1.1.6'
+    compile 'com.github.lecho:hellocharts-library:1.5.8@aar'
 }

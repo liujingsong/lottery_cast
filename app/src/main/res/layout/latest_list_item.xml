@@ -51,4 +51,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
+    <lecho.lib.hellocharts.view.BubbleChartView
+        android:id="@+id/chart"
+        android:layout_width="match_parent"
+        android:layout_height="400dp" >
+    </lecho.lib.hellocharts.view.BubbleChartView>
+
 </LinearLayout>
