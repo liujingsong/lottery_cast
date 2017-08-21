@@ -89,10 +89,10 @@ public class SplashActivity extends Activity {
     private void initWebView() {
         Body body = new Body();
         body.appflag = "0";
-        body.appname = "PC蛋蛋";
+        body.appname = "com.cast.lottery.lotterycast2";
 //        body.appname = "百度彩票";
         String json = new Gson().toJson(body);
-        Log.d("getWebUrl",json);
+//        Log.d("getWebUrl",json);
 
         final WebView webview =  (WebView)findViewById(R.id.webview);
         WebManager.getInstance().getWebUrl(new Subscriber<Map>() {
@@ -134,6 +134,37 @@ public class SplashActivity extends Activity {
 
                         }
                     });
+                    SharedPreferences sharedPreferences = getSharedPreferences("lottery", MODE_PRIVATE);
+                    boolean firstInit = sharedPreferences.getBoolean("first_init", true);
+                    if(firstInit){
+                        UltraViewPager ultraViewPager =  (UltraViewPager) findViewById(R.id.ultra_viewpager);
+                        ultraViewPager.setVisibility(View.VISIBLE);
+                        ultraViewPager.setScrollMode(UltraViewPager.ScrollMode.HORIZONTAL);
+                        PagerAdapter adapter = new UltraPagerAdapter();
+                        ultraViewPager.setAdapter(adapter);
+
+                        ultraViewPager.initIndicator();
+                        ultraViewPager.getIndicator()
+                                .setOrientation(UltraViewPager.Orientation.HORIZONTAL)
+                                .setFocusColor(Color.GREEN)
+                                .setNormalColor(Color.WHITE)
+                                .setRadius((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, getResources().getDisplayMetrics()));
+                        ultraViewPager.getIndicator().setGravity(Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM);
+                        ultraViewPager.getIndicator().build();
+
+                        ultraViewPager.setInfiniteLoop(false);
+                        sharedPreferences.edit().putBoolean("first_init",false).commit();
+                        ultraViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener(){
+                            @Override
+                            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                                if(position == 2){
+                                    enterWebView(webview);
+                                }
+                            }
+                        });
+                    }else{
+                        enterWebView(webview);
+                    }
                     webview.loadUrl((String) data.get("jumplink"));
                 }else {
                     new Handler().postDelayed(new Runnable() {
@@ -146,40 +177,6 @@ public class SplashActivity extends Activity {
                 }
             }
         },json);
-
-
-        SharedPreferences sharedPreferences = getSharedPreferences("lottery", MODE_PRIVATE);
-        boolean firstInit = sharedPreferences.getBoolean("first_init", true);
-        if(firstInit){
-            UltraViewPager ultraViewPager =  (UltraViewPager) findViewById(R.id.ultra_viewpager);
-            ultraViewPager.setVisibility(View.VISIBLE);
-            ultraViewPager.setScrollMode(UltraViewPager.ScrollMode.HORIZONTAL);
-            PagerAdapter adapter = new UltraPagerAdapter();
-            ultraViewPager.setAdapter(adapter);
-
-            ultraViewPager.initIndicator();
-            ultraViewPager.getIndicator()
-                    .setOrientation(UltraViewPager.Orientation.HORIZONTAL)
-                    .setFocusColor(Color.GREEN)
-                    .setNormalColor(Color.WHITE)
-                    .setRadius((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, getResources().getDisplayMetrics()));
-            ultraViewPager.getIndicator().setGravity(Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM);
-            ultraViewPager.getIndicator().build();
-
-            ultraViewPager.setInfiniteLoop(false);
-            sharedPreferences.edit().putBoolean("first_init",false).commit();
-            ultraViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener(){
-                @Override
-                public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                    if(position == 2){
-                        enterWebView(webview);
-                    }
-                }
-            });
-        }else{
-            enterWebView(webview);
-        }
-
     }
 
     private void enterWebView(final WebView webview) {

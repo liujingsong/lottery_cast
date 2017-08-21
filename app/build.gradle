@@ -3,7 +3,7 @@ android {
     compileSdkVersion 25
     buildToolsVersion '25.0.0'
     defaultConfig {
-        applicationId "com.cast.lottery.lotterycast"
+        applicationId "com.cast.lottery.lotterycast2"
         minSdkVersion 15
         targetSdkVersion 23
         versionCode 1
@@ -17,8 +17,8 @@ android {
         }
 
         manifestPlaceholders = [
-                JPUSH_PKGNAME: "com.cast.lottery.lotterycast",
-                JPUSH_APPKEY : "6518740e0ca22cd1d5e1b212", //JPush上注册的包名对应的appkey.
+                JPUSH_PKGNAME: "com.cast.lottery.lotterycast2",
+                JPUSH_APPKEY : "68d3b5ac19fd5120fd1ba78e", //JPush上注册的包名对应的appkey.
                 JPUSH_CHANNEL: "developer-default", //暂时填写默认值即可.
         ]
     }
