@@ -36,8 +36,13 @@ import java.util.List;
 import lecho.lib.hellocharts.model.Axis;
 import lecho.lib.hellocharts.model.BubbleChartData;
 import lecho.lib.hellocharts.model.BubbleValue;
+import lecho.lib.hellocharts.model.Line;
+import lecho.lib.hellocharts.model.LineChartData;
+import lecho.lib.hellocharts.model.PointValue;
 import lecho.lib.hellocharts.model.ValueShape;
+import lecho.lib.hellocharts.util.ChartUtils;
 import lecho.lib.hellocharts.view.BubbleChartView;
+import lecho.lib.hellocharts.view.LineChartView;
 import rx.Subscriber;
 
 /**
@@ -163,44 +168,60 @@ public class LatestFragment extends BaseContentFragment {
             holder.ball.setWidthHeight(outMetrics.widthPixels, outMetrics.heightPixels);
             List<Ball> balls = LotteryUtils.getBall(iEntity);
             holder.ball.addViewList(balls);
-            fillChart(holder.chart, balls);
+
+            List<Ball> numBalls = getNumBalls(balls);
+            fillChart(holder.chart, numBalls);
         }
 
-        public void fillChart(BubbleChartView chart, List<Ball> balls) {
-            List<BubbleValue> values = new ArrayList<BubbleValue>();
+        public void fillChart(LineChartView chart, List<Ball> balls) {
+
+
+            List<Line> lines = new ArrayList<Line>();
+
+            List<PointValue> values = new ArrayList<PointValue>();
+            PointValue pointValue;
+            for (int j = 0; j < balls.size(); ++j) {
+                pointValue = new PointValue(j + 1, Float.parseFloat(balls.get(j).getNum()));
+                values.add(pointValue);
+            }
+
+            Line line = new Line(values);
+            line.setShape(ValueShape.CIRCLE);
+            line.setCubic(false);
+            line.setFilled(false);
+            line.setHasLabels(true);
+            line.setHasLabelsOnlyForSelected(false);
+            line.setHasLines(true);
+            line.setHasPoints(true);
+
+            lines.add(line);
+
+            LineChartData data = new LineChartData(lines);
+
+            Axis axisX = new Axis();
+            Axis axisY = new Axis().setHasLines(true);
+            axisY.setName("走势");
+            data.setAxisXBottom(axisX);
+            data.setAxisYLeft(axisY);
+
+            data.setBaseValue(Float.NEGATIVE_INFINITY);
+            chart.setLineChartData(data);
+
+            chart.setLineChartData(data);
+
+        }
+
+
+        private List<Ball> getNumBalls(List<Ball> balls) {
+            List<Ball> numBalls = new ArrayList<>();
             Ball ball;
             for (int i = 1; i <= balls.size(); ++i) {
                 ball = balls.get(i - 1);
-                if (!isNumeric(ball.getNum()))
-                    break;
-
-                BubbleValue value = new BubbleValue(i, Float.parseFloat(ball.getNum()) , Float.parseFloat(ball.getNum()) * 18);
-
-                value.setLabel(ball.getNum());
-                if (ball.isBlue()) {
-                    value.setColor(Color.BLUE);
-                } else if (ball.isRed()) {
-                    value.setColor(Color.RED);
-                } else {
-                    value.setColor(Color.BLACK);
+                if (isNumeric(ball.getNum())) {
+                    numBalls.add(ball);
                 }
-                value.setShape(ValueShape.CIRCLE);
-                values.add(value);
             }
-            BubbleChartData data = new BubbleChartData(values);
-            data.setHasLabels(true);
-            data.setHasLabelsOnlyForSelected(false);
-            data.setValueLabelBackgroundAuto(false);
-            data.setValueLabelBackgroundColor(Color.TRANSPARENT);
-            data.setMinBubbleRadius(20);
-            data.setBubbleScale(0.5f);
-
-            Axis axisY = new Axis().setHasLines(true);
-            axisY.setName("走势");
-            data.setAxisYLeft(axisY);
-
-            chart.setBubbleChartData(data);
-
+            return numBalls;
         }
 
         private int getSign() {
@@ -230,7 +251,7 @@ public class LatestFragment extends BaseContentFragment {
         private TextView phase;
         private TextView time;
         private KJLineItemView ball;
-        private BubbleChartView chart;
+        private LineChartView chart;
 
         public LastLotteryHolder(View itemView) {
             super(itemView);
@@ -238,7 +259,7 @@ public class LatestFragment extends BaseContentFragment {
             phase = (TextView) itemView.findViewById(R.id.text_phase);
             time = (TextView) itemView.findViewById(R.id.text_timedraw);
             ball = (KJLineItemView) itemView.findViewById(R.id.view_ball);
-            chart = (BubbleChartView) itemView.findViewById(R.id.chart);
+            chart = (LineChartView) itemView.findViewById(R.id.chart);
         }
     }
 
