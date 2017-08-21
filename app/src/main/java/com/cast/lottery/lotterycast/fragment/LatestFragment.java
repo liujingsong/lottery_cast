@@ -22,8 +22,10 @@ import com.cast.lottery.lotterycast.activity.HistoryDetailActivity;
 import com.cast.lottery.lotterycast.activity.KJDetailDialog;
 import com.cast.lottery.lotterycast.data.LotteryServiceManager;
 import com.cast.lottery.lotterycast.listener.RecyclerItemClickListener;
+import com.cast.lottery.lotterycast.models.Ball;
 import com.cast.lottery.lotterycast.models.Lottery;
 import com.cast.lottery.lotterycast.models.LotteryDetail;
+import com.cast.lottery.lotterycast.utils.BitmapUtils;
 import com.cast.lottery.lotterycast.utils.LotteryUtils;
 import com.cast.lottery.lotterycast.widgets.KJLineItemView;
 import com.github.ybq.android.spinkit.SpinKitView;
@@ -31,6 +33,16 @@ import com.github.ybq.android.spinkit.SpinKitView;
 import java.util.ArrayList;
 import java.util.List;
 
+import lecho.lib.hellocharts.model.Axis;
+import lecho.lib.hellocharts.model.BubbleChartData;
+import lecho.lib.hellocharts.model.BubbleValue;
+import lecho.lib.hellocharts.model.Line;
+import lecho.lib.hellocharts.model.LineChartData;
+import lecho.lib.hellocharts.model.PointValue;
+import lecho.lib.hellocharts.model.ValueShape;
+import lecho.lib.hellocharts.util.ChartUtils;
+import lecho.lib.hellocharts.view.BubbleChartView;
+import lecho.lib.hellocharts.view.LineChartView;
 import rx.Subscriber;
 
 /**
@@ -42,7 +54,7 @@ public class LatestFragment extends BaseContentFragment {
     private SpinKitView spn_kit;
     private KJDetailDialog kjDetailDialog;
 
-    public LatestFragment(){
+    public LatestFragment() {
 
     }
 
@@ -54,11 +66,10 @@ public class LatestFragment extends BaseContentFragment {
     @Override
     public void onResume() {
         super.onResume();
-        if(getData().size() == 0) {
+        if (getData().size() == 0) {
             fetchData();
         }
     }
-
 
 
     @Override
@@ -73,7 +84,7 @@ public class LatestFragment extends BaseContentFragment {
         return rootView;
     }
 
-    public void fetchData(){
+    public void fetchData() {
         spn_kit.setVisibility(View.VISIBLE);
         LotteryServiceManager.getInstance().getLastData360(new Subscriber<List<Lottery.IEntity>>() {
             @Override
@@ -88,7 +99,7 @@ public class LatestFragment extends BaseContentFragment {
 
             @Override
             public void onNext(List<Lottery.IEntity> list) {
-                Log.d("getLastData360",list.toString());
+                Log.d("getLastData360", list.toString());
                 getData().clear();
                 getData().addAll(list);
                 latestLotteryAdapter.notifyDataSetChanged();
@@ -114,7 +125,7 @@ public class LatestFragment extends BaseContentFragment {
 
                     @Override
                     public void onNext(LotteryDetail lotteryDetail) {
-                        if(kjDetailDialog ==null) {
+                        if (kjDetailDialog == null) {
                             kjDetailDialog = new KJDetailDialog(getActivity());
                         }
                         kjDetailDialog.setLotteryDetailView(lotteryDetail);
@@ -132,7 +143,6 @@ public class LatestFragment extends BaseContentFragment {
             }
         }));
     }
-
 
 
     private class LatestLotteryAdapter extends RecyclerView.Adapter<LastLotteryHolder> {
@@ -154,9 +164,78 @@ public class LatestFragment extends BaseContentFragment {
             holder.time.setText("开奖日期" + iEntity.getDate());
             DisplayMetrics outMetrics = null;
             outMetrics = new DisplayMetrics();
-            ((Activity)getContext()).getWindowManager().getDefaultDisplay().getMetrics(outMetrics);
+            ((Activity) getContext()).getWindowManager().getDefaultDisplay().getMetrics(outMetrics);
             holder.ball.setWidthHeight(outMetrics.widthPixels, outMetrics.heightPixels);
-            holder.ball.addViewList(LotteryUtils.getBall(iEntity));
+            List<Ball> balls = LotteryUtils.getBall(iEntity);
+            holder.ball.addViewList(balls);
+
+            List<Ball> numBalls = getNumBalls(balls);
+            fillChart(holder.chart, numBalls);
+        }
+
+        public void fillChart(LineChartView chart, List<Ball> balls) {
+
+
+            List<Line> lines = new ArrayList<Line>();
+
+            List<PointValue> values = new ArrayList<PointValue>();
+            PointValue pointValue;
+            for (int j = 0; j < balls.size(); ++j) {
+                pointValue = new PointValue(j + 1, Float.parseFloat(balls.get(j).getNum()));
+                values.add(pointValue);
+            }
+
+            Line line = new Line(values);
+            line.setShape(ValueShape.CIRCLE);
+            line.setCubic(false);
+            line.setFilled(false);
+            line.setHasLabels(true);
+            line.setHasLabelsOnlyForSelected(false);
+            line.setHasLines(true);
+            line.setHasPoints(true);
+
+            lines.add(line);
+
+            LineChartData data = new LineChartData(lines);
+
+            Axis axisX = new Axis();
+            Axis axisY = new Axis().setHasLines(true);
+            axisY.setName("走势");
+            data.setAxisXBottom(axisX);
+            data.setAxisYLeft(axisY);
+
+            data.setBaseValue(Float.NEGATIVE_INFINITY);
+            chart.setLineChartData(data);
+
+            chart.setLineChartData(data);
+
+        }
+
+
+        private List<Ball> getNumBalls(List<Ball> balls) {
+            List<Ball> numBalls = new ArrayList<>();
+            Ball ball;
+            for (int i = 1; i <= balls.size(); ++i) {
+                ball = balls.get(i - 1);
+                if (isNumeric(ball.getNum())) {
+                    numBalls.add(ball);
+                }
+            }
+            return numBalls;
+        }
+
+        private int getSign() {
+            int[] sign = new int[]{-1, 1};
+            return sign[Math.round((float) Math.random())];
+        }
+
+        public boolean isNumeric(String str) {
+            for (int i = 0; i < str.length(); i++) {
+                if (!Character.isDigit(str.charAt(i))) {
+                    return false;
+                }
+            }
+            return true;
         }
 
         @Override
@@ -169,9 +248,10 @@ public class LatestFragment extends BaseContentFragment {
 
 
         private ImageView name;
-        private  TextView phase;
-        private  TextView time;
-        private  KJLineItemView ball;
+        private TextView phase;
+        private TextView time;
+        private KJLineItemView ball;
+        private LineChartView chart;
 
         public LastLotteryHolder(View itemView) {
             super(itemView);
@@ -179,9 +259,9 @@ public class LatestFragment extends BaseContentFragment {
             phase = (TextView) itemView.findViewById(R.id.text_phase);
             time = (TextView) itemView.findViewById(R.id.text_timedraw);
             ball = (KJLineItemView) itemView.findViewById(R.id.view_ball);
+            chart = (LineChartView) itemView.findViewById(R.id.chart);
         }
     }
-
 
 
     @Override
@@ -202,8 +282,9 @@ public class LatestFragment extends BaseContentFragment {
                 .endConfig()
                 .buildRound(text, getContext().getResources().getColor(R.color.color_ffca28));
     }
+
     @Override
-    public void onRefresh(){
+    public void onRefresh() {
         fetchData();
     }
 }

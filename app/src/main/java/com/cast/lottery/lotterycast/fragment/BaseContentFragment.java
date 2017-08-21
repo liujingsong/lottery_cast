@@ -28,6 +28,7 @@ public abstract class BaseContentFragment extends Fragment implements ScreenShot
     public static final String CLOSE = "Close";
     public static final String LATEST = "latest";
     public static final String HISTORY = "history";
+    public static final String NEWS = "news";
     public static final String ABOUT = "about";
 
 

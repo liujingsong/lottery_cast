@@ -23,6 +23,7 @@ import com.cast.lottery.lotterycast.fragment.AboutFragment;
 import com.cast.lottery.lotterycast.fragment.BaseContentFragment;
 import com.cast.lottery.lotterycast.fragment.HistoryFragment;
 import com.cast.lottery.lotterycast.fragment.LatestFragment;
+import com.cast.lottery.lotterycast.fragment.NewsFragment;
 import com.cast.lottery.lotterycast.models.Lottery;
 import com.github.ybq.android.spinkit.SpinKitView;
 
@@ -93,8 +94,10 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
         list.add(menuItem);
         SlideMenuItem menuItem2 = new SlideMenuItem(BaseContentFragment.HISTORY, buildTextMenuItem("历史"));
         list.add(menuItem2);
-        SlideMenuItem menuItem3 = new SlideMenuItem(BaseContentFragment.ABOUT, buildTextMenuItem("关于"));
+        SlideMenuItem menuItem3 = new SlideMenuItem(BaseContentFragment.NEWS, buildTextMenuItem("资讯"));
         list.add(menuItem3);
+        SlideMenuItem menuItem4 = new SlideMenuItem(BaseContentFragment.ABOUT, buildTextMenuItem("关于"));
+        list.add(menuItem4);
     }
 
     private TextDrawable buildTextMenuItem(String text) {
@@ -191,6 +194,10 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
             case BaseContentFragment.HISTORY:
                 toolbar.setTitle("历史开奖");
                 return replaceFragment(getFragment(HistoryFragment.class.getName()), screenShotable, position);
+
+            case BaseContentFragment.NEWS:
+                toolbar.setTitle("资讯");
+                return replaceFragment(getFragment(NewsFragment.class.getName()), screenShotable, position);
             case BaseContentFragment.ABOUT:
                 toolbar.setTitle("关于");
                 return replaceFragment(getFragment(AboutFragment.class.getName()),screenShotable,position);
