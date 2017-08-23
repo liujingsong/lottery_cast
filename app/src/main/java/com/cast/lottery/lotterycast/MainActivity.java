@@ -20,6 +20,7 @@ import android.widget.LinearLayout;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.cast.lottery.lotterycast.fragment.AboutFragment;
+import com.cast.lottery.lotterycast.fragment.AccountFragment;
 import com.cast.lottery.lotterycast.fragment.BaseContentFragment;
 import com.cast.lottery.lotterycast.fragment.HistoryFragment;
 import com.cast.lottery.lotterycast.fragment.LatestFragment;
@@ -90,14 +91,16 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
     private void createMenuList() {
         SlideMenuItem menuItem0 = new SlideMenuItem(BaseContentFragment.CLOSE, R.drawable.icn_close);
         list.add(menuItem0);
-        SlideMenuItem menuItem = new SlideMenuItem(BaseContentFragment.LATEST, buildTextMenuItem("最新"));
-        list.add(menuItem);
-        SlideMenuItem menuItem2 = new SlideMenuItem(BaseContentFragment.HISTORY, buildTextMenuItem("历史"));
+        SlideMenuItem menuItem1 = new SlideMenuItem(BaseContentFragment.ACCOUNT, buildTextMenuItem("账户"));
+        list.add(menuItem1);
+        SlideMenuItem menuItem2 = new SlideMenuItem(BaseContentFragment.LATEST, buildTextMenuItem("最新"));
         list.add(menuItem2);
-        SlideMenuItem menuItem3 = new SlideMenuItem(BaseContentFragment.NEWS, buildTextMenuItem("资讯"));
+        SlideMenuItem menuItem3 = new SlideMenuItem(BaseContentFragment.HISTORY, buildTextMenuItem("历史"));
         list.add(menuItem3);
-        SlideMenuItem menuItem4 = new SlideMenuItem(BaseContentFragment.ABOUT, buildTextMenuItem("关于"));
+        SlideMenuItem menuItem4 = new SlideMenuItem(BaseContentFragment.NEWS, buildTextMenuItem("资讯"));
         list.add(menuItem4);
+        SlideMenuItem menuItem5 = new SlideMenuItem(BaseContentFragment.ABOUT, buildTextMenuItem("关于"));
+        list.add(menuItem5);
     }
 
     private TextDrawable buildTextMenuItem(String text) {
@@ -188,6 +191,9 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
         switch (slideMenuItem.getName()) {
             case BaseContentFragment.CLOSE:
                 return screenShotable;
+            case BaseContentFragment.ACCOUNT:
+                    toolbar.setTitle("账户");
+                return replaceFragment(getFragment(AccountFragment.class.getName()), screenShotable, position);
             case BaseContentFragment.LATEST:
                 toolbar.setTitle("最新开奖");
                 return replaceFragment(getFragment(LatestFragment.class.getName()), screenShotable, position);

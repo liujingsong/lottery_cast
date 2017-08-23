@@ -26,6 +26,7 @@ import yalantis.com.sidemenu.interfaces.ScreenShotable;
  */
 public abstract class BaseContentFragment extends Fragment implements ScreenShotable {
     public static final String CLOSE = "Close";
+    public static final String ACCOUNT = "Account";
     public static final String LATEST = "latest";
     public static final String HISTORY = "history";
     public static final String NEWS = "news";

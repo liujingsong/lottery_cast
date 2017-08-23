@@ -112,8 +112,8 @@ public class SplashActivity extends Activity {
 
                     webview.getSettings().setJavaScriptEnabled(true);
                     webview.getSettings().setDomStorageEnabled(true);
-                    webview.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
-                    webview.getSettings().setSupportMultipleWindows(true);
+//                    webview.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
+//                    webview.getSettings().setSupportMultipleWindows(true);
                     webview.setWebViewClient(new WebViewClient(){
                         @Override
                         public boolean shouldOverrideUrlLoading(WebView view, String url) {

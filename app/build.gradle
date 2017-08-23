@@ -60,4 +60,5 @@ dependencies {
     compile 'cn.jiguang.sdk:jpush:3.0.8'
     compile 'cn.jiguang.sdk:jcore:1.1.6'
     compile 'com.github.lecho:hellocharts-library:1.5.8@aar'
+    compile "com.daimajia.swipelayout:library:1.2.0@aar"
 }

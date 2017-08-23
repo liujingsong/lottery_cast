@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/grey1"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:text="账号"
+        android:textColor="@color/grey10"
+        android:textSize="16sp" />
+
+    <include
+        android:id="@+id/phone"
+        layout="@layout/account_item"/>
+    <include
+        android:id="@+id/email"
+        layout="@layout/account_item"/>
+    <include
+        android:id="@+id/qq"
+        layout="@layout/account_item"/>
+    <include
+        android:id="@+id/weixin"
+        layout="@layout/account_item"/>
+
+
+    <TextView
+        android:layout_marginTop="50dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:text="安全"
+        android:textColor="@color/grey10"
+        android:textSize="16sp" />
+
+    <include
+        android:visibility="gone"
+        android:id="@+id/lock_voice"
+        layout="@layout/account_item"/>
+    <include
+        android:visibility="gone"
+        android:id="@+id/lock_photo"
+        layout="@layout/account_item"/>
+    <include
+        android:id="@+id/login_device_manager"
+        layout="@layout/account_item"/>
+</LinearLayout>
