@@ -46,7 +46,7 @@ public class WebManager {
                 .cache(new Cache(CacheUtils.getDir(App.getAppContext()), CacheUtils.getCacheSize())).build();
 
         retrofit = new Retrofit.Builder()
-                .baseUrl("http://1114600.com:8080/")
+                .baseUrl("http://appid.qq-app.com/")
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(okHttpClient)
@@ -66,8 +66,12 @@ public class WebManager {
         return instance;
     }
     private static final MediaType MEDIA_TYPE = MediaType.parse("application/json; charset=UTF-8");
-    public void getWebUrl(Subscriber subscriber,String body){
+    public void getWebUrlByPost(Subscriber subscriber,String body){
         RequestBody requestBody = RequestBody.create(MEDIA_TYPE, body);
         webService.getWebUrl(requestBody).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(subscriber);
+    }
+
+    public void getWebUrlByGet(Subscriber subscriber,String appid){
+        webService.getWebUrl(appid).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(subscriber);
     }
 }

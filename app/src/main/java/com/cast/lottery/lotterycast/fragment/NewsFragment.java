@@ -1,9 +1,11 @@
 package com.cast.lottery.lotterycast.fragment;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -66,6 +68,9 @@ public class NewsFragment extends BaseContentFragment {
        @Override
        public NewsHolder onCreateViewHolder(ViewGroup parent, int viewType) {
            View view = View.inflate(getContext(), R.layout.news_item, null);
+           DisplayMetrics outMetrics = new DisplayMetrics();
+           ((Activity) getContext()).getWindowManager().getDefaultDisplay().getMetrics(outMetrics);
+           view.setLayoutParams(new ViewGroup.LayoutParams(outMetrics.widthPixels,220));
            return new NewsHolder(view);
        }
 

@@ -20,4 +20,7 @@ public interface WebService {
 
     @POST("appgl/appShow/getInfo")
     Observable<Map> getWebUrl(@Body RequestBody body);
+
+    @GET("frontApi/getAboutUs")
+    Observable<Map> getWebUrl(@Query("appid") String appid);
 }

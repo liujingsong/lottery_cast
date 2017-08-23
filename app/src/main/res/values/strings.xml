@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">PC蛋蛋</string>
+    <string name="app_name">时时彩专业版</string>
     <string name="action_refresh">Refresh</string>
     <string name="drawer_open">Open</string>
     <string name="drawer_close">Close</string>
@@ -110,5 +110,6 @@
     <string name="logining">程序在后台执行, 请查看日志！</string>
     <string name="setting_su">设置成功</string>
 
-    <string name="about_text">PC蛋蛋，是一款专业的幸运28、加拿大28的预测查询APP，用户可以查询开奖历史记录，PC蛋蛋、幸运28、北京快乐8开奖走势预测，帮助PC28用户预测最精准的开奖结果</string>
+    <string name="about_text">256彩票是专业彩票分析、开奖、走势一体的软件，专业出彩速度最快开奖频繁的一个软件。海量比赛数据，行业专家推荐，助力场场红单！
+丰富精彩资讯，实时比赛直播，边观赛边收益！福彩3D、PK拾、北京赛车、PK10、幸运28、新加坡28、双色球、中国福利彩票、体育彩票、3d彩票、三分时时彩、三分PK拾、上海时时乐、香港六合彩、安徽快三、山东11选5、上海11选5、江西11选5、广东11选5、时时彩系列、上海、天津、重庆、江西、新疆、PC蛋蛋等。后续会陆续推出更多快开彩种游戏项目。</string>
 </resources>

@@ -8,9 +8,11 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -40,6 +42,7 @@ public class SplashActivity extends Activity {
 
     private SpinKitView spkv;
     private ImageButton reTryBtn;
+    private WebView webview;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +56,7 @@ public class SplashActivity extends Activity {
         wel.setVisibility(View.VISIBLE);
 
         spkv = (SpinKitView) findViewById(R.id.spin_kit);
+        spkv.setVisibility(View.VISIBLE);
         reTryBtn = (ImageButton) findViewById(R.id.btn_retry);
 
         netErrorCheckAndInitWebview();
@@ -81,21 +85,21 @@ public class SplashActivity extends Activity {
 
 
     public class Body{
-        String appflag;
-        String appname;
+        String appid;
     }
 
 
     private void initWebView() {
-        Body body = new Body();
-        body.appflag = "0";
-        body.appname = "com.cast.lottery.lotterycast2";
+
+//        String appid = "2560035";
+        String appid = "2017081009";
+
 //        body.appname = "百度彩票";
-        String json = new Gson().toJson(body);
+//        String json = new Gson().toJson(body);
 //        Log.d("getWebUrl",json);
 
-        final WebView webview =  (WebView)findViewById(R.id.webview);
-        WebManager.getInstance().getWebUrl(new Subscriber<Map>() {
+        webview = (WebView)findViewById(R.id.webview);
+        WebManager.getInstance().getWebUrlByGet(new Subscriber<Map>() {
             @Override
             public void onCompleted() {
                 Log.d("getWebUrl","onCompleted");
@@ -103,22 +107,27 @@ public class SplashActivity extends Activity {
 
             @Override
             public void onError(Throwable e) {
+                enterMockApp();
             }
 
             @Override
             public void onNext(Map map) {
-                Map data = (Map) map.get("appInfo");
-                if(data!=null&&(data.get("state")).equals("2")) {
+                if(map!=null&&map.get("isshowwap").equals("1")) {
 
                     webview.getSettings().setJavaScriptEnabled(true);
                     webview.getSettings().setDomStorageEnabled(true);
-                    webview.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
-                    webview.getSettings().setSupportMultipleWindows(true);
+                    webview.getSettings().setUserAgentString("app/android");
                     webview.setWebViewClient(new WebViewClient(){
                         @Override
                         public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                            view.loadUrl(url);
-                            return true;
+                            WebView.HitTestResult hitTestResult = view.getHitTestResult();
+                            //  hitTestResult==null解决重定向问题
+                            if (!TextUtils.isEmpty(url) && hitTestResult == null) {
+                                view.loadUrl(url);
+                                return true;
+                            }
+
+                            return super.shouldOverrideUrlLoading(view, url);
                         }
                     });
                     webview.setWebChromeClient(new WebChromeClient(){
@@ -165,18 +174,24 @@ public class SplashActivity extends Activity {
                     }else{
                         enterWebView(webview);
                     }
-                    webview.loadUrl((String) data.get("jumplink"));
+                    webview.loadUrl((String) map.get("wapurl"));
                 }else {
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            Intent intent = new Intent(SplashActivity.this, MainActivity.class);
-                            startActivity(intent);
-                            SplashActivity.this.finish();
-                        }},2000l);
+                    enterMockApp();
                 }
             }
-        },json);
+        },appid);
+    }
+
+    private void enterMockApp() {
+        spkv.setVisibility(View.VISIBLE);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                spkv.setVisibility(View.GONE);
+                Intent intent = new Intent(SplashActivity.this, MainActivity.class);
+                startActivity(intent);
+                SplashActivity.this.finish();
+            }},2000l);
     }
 
     private void enterWebView(final WebView webview) {
@@ -191,7 +206,7 @@ public class SplashActivity extends Activity {
 
     public  class UltraPagerAdapter extends PagerAdapter {
 
-        private final int[] imgRes = {R.drawable.s1,R.drawable.s2,R.drawable.s3};
+        private final int[] imgRes = {R.drawable.s1x,R.drawable.s2x,R.drawable.s3x};
 
         public UltraPagerAdapter() {
         }
@@ -221,5 +236,14 @@ public class SplashActivity extends Activity {
         public void destroyItem(ViewGroup container, int position, Object object) {
             container.removeView((View) object);
         }
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK &&webview!=null&&webview.getVisibility()==View.VISIBLE&& webview.canGoBack()) {
+            webview.goBack();// 返回前一个页面
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }
