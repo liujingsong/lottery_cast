@@ -40,7 +40,7 @@ public class SplashActivity2 extends AppCompatActivity {
         final ArrayList<NavigationTabBar.Model> models6 = new ArrayList<>();
         models6.add(
                 new NavigationTabBar.Model.Builder(
-                        buildItemNameDrawable("首页"), randomColor()
+                        buildItemNameDrawable("首页"), getResources().getColor(R.color.red2)
                 ).build()
         );
         models6.add(
@@ -50,7 +50,7 @@ public class SplashActivity2 extends AppCompatActivity {
         );
         models6.add(
                 new NavigationTabBar.Model.Builder(
-                        buildItemNameDrawable("充值"), randomColor()
+                        buildItemNameDrawable("充值"), getResources().getColor(R.color.red2)
                 ).build()
         );
         models6.add(
@@ -79,6 +79,7 @@ public class SplashActivity2 extends AppCompatActivity {
                }
             }
         });
+        ntbSample6.setAnimationDuration(10);
     }
 
     private TextDrawable buildItemNameDrawable(String text) {
@@ -93,14 +94,5 @@ public class SplashActivity2 extends AppCompatActivity {
                 .toUpperCase()
                 .endConfig()
                 .buildRect(text, Color.TRANSPARENT);
-    }
-
-    private int randomColor() {
-        float[] TEMP_HSL = new float[]{0, 0, 0};
-        float[] hsl = TEMP_HSL;
-        hsl[0] = (float) (Math.random() * 360);
-        hsl[1] = (float) (40 + (Math.random() * 60));
-        hsl[2] = (float) (40 + (Math.random() * 60));
-        return ColorUtils.HSLToColor(hsl);
     }
 }
