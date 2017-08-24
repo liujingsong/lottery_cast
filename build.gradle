@@ -23,6 +23,7 @@ allprojects {
         maven {
             url 'http://dl.bintray.com/amulyakhare/maven'
         }
+        maven { url "https://raw.github.com/bmob/bmob-android-sdk/master" }
     }
 }
 

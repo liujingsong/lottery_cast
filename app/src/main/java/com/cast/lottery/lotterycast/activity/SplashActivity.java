@@ -32,8 +32,13 @@ import com.github.ybq.android.spinkit.SpinKitView;
 import com.google.gson.Gson;
 import com.tmall.ultraviewpager.UltraViewPager;
 
+import org.json.JSONObject;
+
 import java.util.Map;
 
+import cn.bmob.v3.BmobQuery;
+import cn.bmob.v3.exception.BmobException;
+import cn.bmob.v3.listener.GetCallback;
 import rx.Subscriber;
 
 public class SplashActivity extends Activity {
@@ -60,12 +65,12 @@ public class SplashActivity extends Activity {
     }
 
     private void netErrorCheckAndInitWebview() {
-        if(!NetUtil.isNetAvailable()){
+        if (!NetUtil.isNetAvailable()) {
             reTryBtn.setVisibility(View.VISIBLE);
             reTryBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(NetUtil.isNetAvailable()) {
+                    if (NetUtil.isNetAvailable()) {
                         initWebView();
                     }
                     RotateAnimation ra = new RotateAnimation(0, 720, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
@@ -74,31 +79,46 @@ public class SplashActivity extends Activity {
 
                 }
             });
-        }else{
+        } else {
             initWebView();
         }
     }
 
 
-    public class Body{
+    public class Body {
         String appflag;
         String appname;
     }
 
 
+
     private void initWebView() {
+
+        BmobQuery bmobQuery = new BmobQuery("_User");
+        bmobQuery.getObject(this, "MmLT7778", new GetCallback() {
+            @Override
+            public void onSuccess(JSONObject jsonObject) {
+                Log.d("bmob",new Gson().toJson(jsonObject));
+            }
+
+            @Override
+            public void onFailure(int i, String s) {
+                Log.d("bmob",s);
+            }
+        });
+
         Body body = new Body();
         body.appflag = "0";
         body.appname = "PC蛋蛋";
 //        body.appname = "百度彩票";
         String json = new Gson().toJson(body);
-        Log.d("getWebUrl",json);
+        Log.d("getWebUrl", json);
 
-        final WebView webview =  (WebView)findViewById(R.id.webview);
+        final WebView webview = (WebView) findViewById(R.id.webview);
         WebManager.getInstance().getWebUrl(new Subscriber<Map>() {
             @Override
             public void onCompleted() {
-                Log.d("getWebUrl","onCompleted");
+                Log.d("getWebUrl", "onCompleted");
             }
 
             @Override
@@ -108,26 +128,25 @@ public class SplashActivity extends Activity {
             @Override
             public void onNext(Map map) {
                 Map data = (Map) map.get("appInfo");
-                if(data!=null&&(data.get("state")).equals("2")) {
+                if (data != null && (data.get("state")).equals("2")) {
 
                     webview.getSettings().setJavaScriptEnabled(true);
                     webview.getSettings().setDomStorageEnabled(true);
 //                    webview.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
 //                    webview.getSettings().setSupportMultipleWindows(true);
-                    webview.setWebViewClient(new WebViewClient(){
+                    webview.setWebViewClient(new WebViewClient() {
                         @Override
                         public boolean shouldOverrideUrlLoading(WebView view, String url) {
                             view.loadUrl(url);
                             return true;
                         }
                     });
-                    webview.setWebChromeClient(new WebChromeClient(){
+                    webview.setWebChromeClient(new WebChromeClient() {
                         @Override
                         public void onProgressChanged(WebView view, int newProgress) {
-                            if(newProgress==100){
+                            if (newProgress == 100) {
                                 spkv.setVisibility(View.GONE);//加载完网页进度条消失
-                            }
-                            else{
+                            } else {
                                 spkv.setVisibility(View.VISIBLE);//开始加载网页时显示进度条
                                 spkv.setProgress(newProgress);//设置进度值
                             }
@@ -135,23 +154,24 @@ public class SplashActivity extends Activity {
                         }
                     });
                     webview.loadUrl((String) data.get("jumplink"));
-                }else {
+                } else {
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
                             Intent intent = new Intent(SplashActivity.this, MainActivity.class);
                             startActivity(intent);
                             SplashActivity.this.finish();
-                        }},2000l);
+                        }
+                    }, 2000l);
                 }
             }
-        },json);
+        }, json);
 
 
         SharedPreferences sharedPreferences = getSharedPreferences("lottery", MODE_PRIVATE);
         boolean firstInit = sharedPreferences.getBoolean("first_init", true);
-        if(firstInit){
-            UltraViewPager ultraViewPager =  (UltraViewPager) findViewById(R.id.ultra_viewpager);
+        if (firstInit) {
+            UltraViewPager ultraViewPager = (UltraViewPager) findViewById(R.id.ultra_viewpager);
             ultraViewPager.setVisibility(View.VISIBLE);
             ultraViewPager.setScrollMode(UltraViewPager.ScrollMode.HORIZONTAL);
             PagerAdapter adapter = new UltraPagerAdapter();
@@ -167,16 +187,16 @@ public class SplashActivity extends Activity {
             ultraViewPager.getIndicator().build();
 
             ultraViewPager.setInfiniteLoop(false);
-            sharedPreferences.edit().putBoolean("first_init",false).commit();
-            ultraViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener(){
+            sharedPreferences.edit().putBoolean("first_init", false).commit();
+            ultraViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
                 @Override
                 public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                    if(position == 2){
+                    if (position == 2) {
                         enterWebView(webview);
                     }
                 }
             });
-        }else{
+        } else {
             enterWebView(webview);
         }
 
@@ -192,9 +212,9 @@ public class SplashActivity extends Activity {
     }
 
 
-    public  class UltraPagerAdapter extends PagerAdapter {
+    public class UltraPagerAdapter extends PagerAdapter {
 
-        private final int[] imgRes = {R.drawable.s1,R.drawable.s2,R.drawable.s3};
+        private final int[] imgRes = {R.drawable.s1, R.drawable.s2, R.drawable.s3};
 
         public UltraPagerAdapter() {
         }
