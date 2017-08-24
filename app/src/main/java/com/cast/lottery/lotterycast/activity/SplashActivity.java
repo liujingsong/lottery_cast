@@ -3,6 +3,7 @@ package com.cast.lottery.lotterycast.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -22,20 +23,27 @@ import android.view.animation.RotateAnimation;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.cast.lottery.lotterycast.MainActivity;
 import com.cast.lottery.lotterycast.R;
 import com.cast.lottery.lotterycast.data.WebManager;
 
+import com.cast.lottery.lotterycast.models.AppInfo;
 import com.cast.lottery.lotterycast.utils.NetUtil;
 import com.github.ybq.android.spinkit.SpinKitView;
 import com.google.gson.Gson;
+import com.just.library.AgentWeb;
 import com.tmall.ultraviewpager.UltraViewPager;
 
 import java.util.Map;
 
+import cn.bmob.v3.BmobQuery;
+import cn.bmob.v3.exception.BmobException;
+import cn.bmob.v3.listener.QueryListener;
 import rx.Subscriber;
 
 public class SplashActivity extends Activity {
@@ -43,6 +51,8 @@ public class SplashActivity extends Activity {
     private SpinKitView spkv;
     private ImageButton reTryBtn;
     private WebView webview;
+    private FrameLayout layout;
+    private AgentWeb mAgentWeb;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +60,8 @@ public class SplashActivity extends Activity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        setContentView(R.layout.activity_splash);
+        layout = (FrameLayout) View.inflate(this, R.layout.activity_splash, null);
+        setContentView(layout);
         ImageView wel = (ImageView) findViewById(R.id.wellcome_img);
         wel.setBackgroundResource(R.drawable.welcome);
         wel.setVisibility(View.VISIBLE);
@@ -83,13 +94,75 @@ public class SplashActivity extends Activity {
         }
     }
 
+    public void home(View view) {
+        //点击时打开获取到的首页地址
+    }
+
+    public void back(View view) {
+        //返回上一页
+    }
+
+    public void pay(View view) {
+        //点击时打开获取到的充值地址
+    }
+
+    public void refresh(View view) {
+        //刷新当前agentweb的url地址页面
+    }
+
 
     public class Body{
         String appid;
     }
 
+    WebViewClient mWebViewClient = new WebViewClient(){
+        @Override
+        public boolean shouldOverrideUrlLoading(WebView view, String url) {
+
+            return super.shouldOverrideUrlLoading(view, url);
+        }
+
+        @Override
+        public void onPageStarted(WebView view, String url, Bitmap favicon) {
+            super.onPageStarted(view, url, favicon);
+            spkv.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        public void onPageFinished(WebView view, String url) {
+            super.onPageFinished(view, url);
+            spkv.setVisibility(View.GONE);
+        }
+    };
+
+    WebChromeClient mWebChromeClient = new WebChromeClient(){
+        @Override
+        public void onProgressChanged(WebView view, int newProgress) {
+            if(newProgress==100){
+                spkv.setVisibility(View.GONE);//加载完网页进度条消失
+            }
+            else{
+                spkv.setVisibility(View.VISIBLE);//开始加载网页时显示进度条
+                spkv.setProgress(newProgress);//设置进度值
+            }
+
+        }
+    };
+
 
     private void initWebView() {
+
+        BmobQuery<AppInfo> bmobQuery = new BmobQuery<AppInfo>();
+        bmobQuery.getObject("MmLT7778", new QueryListener<AppInfo>() {
+            @Override
+            public void done(AppInfo info,BmobException e) {
+                if(e==null){
+                    Toast.makeText(SplashActivity.this,info.toString(),Toast.LENGTH_LONG).show();
+                }else{
+
+                }
+            }
+        });
 
 //        String appid = "2560035";
         String appid = "2017081009";
@@ -111,38 +184,9 @@ public class SplashActivity extends Activity {
             }
 
             @Override
-            public void onNext(Map map) {
+            public void onNext(final Map map) {
                 if(map!=null&&map.get("isshowwap").equals("1")) {
 
-                    webview.getSettings().setJavaScriptEnabled(true);
-                    webview.getSettings().setDomStorageEnabled(true);
-                    webview.getSettings().setUserAgentString("app/android");
-                    webview.setWebViewClient(new WebViewClient(){
-                        @Override
-                        public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                            WebView.HitTestResult hitTestResult = view.getHitTestResult();
-                            //  hitTestResult==null解决重定向问题
-                            if (!TextUtils.isEmpty(url) && hitTestResult == null) {
-                                view.loadUrl(url);
-                                return true;
-                            }
-
-                            return super.shouldOverrideUrlLoading(view, url);
-                        }
-                    });
-                    webview.setWebChromeClient(new WebChromeClient(){
-                        @Override
-                        public void onProgressChanged(WebView view, int newProgress) {
-                            if(newProgress==100){
-                                spkv.setVisibility(View.GONE);//加载完网页进度条消失
-                            }
-                            else{
-                                spkv.setVisibility(View.VISIBLE);//开始加载网页时显示进度条
-                                spkv.setProgress(newProgress);//设置进度值
-                            }
-
-                        }
-                    });
                     SharedPreferences sharedPreferences = getSharedPreferences("lottery", MODE_PRIVATE);
                     boolean firstInit = sharedPreferences.getBoolean("first_init", true);
                     if(firstInit){
@@ -167,14 +211,13 @@ public class SplashActivity extends Activity {
                             @Override
                             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
                                 if(position == 2){
-                                    enterWebView(webview);
+                                    enterWebView((String) map.get("wapurl"));
                                 }
                             }
                         });
                     }else{
-                        enterWebView(webview);
+                        enterWebView((String) map.get("wapurl"));
                     }
-                    webview.loadUrl((String) map.get("wapurl"));
                 }else {
                     enterMockApp();
                 }
@@ -190,17 +233,20 @@ public class SplashActivity extends Activity {
                 spkv.setVisibility(View.GONE);
                 Intent intent = new Intent(SplashActivity.this, MainActivity.class);
                 startActivity(intent);
-                SplashActivity.this.finish();
+//                SplashActivity.this.finish();
             }},2000l);
     }
-
-    private void enterWebView(final WebView webview) {
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                webview.setVisibility(View.VISIBLE);
-            }
-        }, 2000l);
+    private void enterWebView(String url) {
+        mAgentWeb = AgentWeb.with(SplashActivity.this)//传入Activity
+                .setAgentWebParent(layout, new FrameLayout.LayoutParams(-1, -1))//传入AgentWeb 的父控件 ，如果父控件为 RelativeLayout ， 那么第二参数需要传入 RelativeLayout.LayoutParams ,第一个参数和第二个参数应该对应。
+                .closeProgressBar()// 不使用进度条
+                .setWebViewClient(mWebViewClient)
+                .setWebChromeClient(mWebChromeClient)
+                .setSecutityType(AgentWeb.SecurityType.strict)
+                .createAgentWeb()
+                .ready()
+                .go(url);
+        findViewById(R.id.buttons).setVisibility(View.VISIBLE);
     }
 
 
@@ -238,12 +284,5 @@ public class SplashActivity extends Activity {
         }
     }
 
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK &&webview!=null&&webview.getVisibility()==View.VISIBLE&& webview.canGoBack()) {
-            webview.goBack();// 返回前一个页面
-            return true;
-        }
-        return super.onKeyDown(keyCode, event);
-    }
+
 }

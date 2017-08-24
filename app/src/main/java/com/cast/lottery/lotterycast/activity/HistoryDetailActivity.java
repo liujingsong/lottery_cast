@@ -103,6 +103,7 @@ public class HistoryDetailActivity extends AppCompatActivity {
 
     public void setActionBar(){
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        getResources().getColor(R.color.color_ffca28);
         toolbar.setTitle(LotteryUtils.getName(lotId));
         setSupportActionBar(toolbar);
         getSupportActionBar().setHomeButtonEnabled(true);

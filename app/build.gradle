@@ -28,6 +28,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    useLibrary 'org.apache.http.legacy'
 }
 
 dependencies {
@@ -55,9 +56,18 @@ dependencies {
     compile 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
     compile 'com.android.support:recyclerview-v7:25.3.0'
     implementation 'com.android.support:support-v4:25.0.0'
-    implementation 'com.google.code.gson:gson:2.8.1'
+//    implementation 'com.google.code.gson:gson:2.8.1'
     compile 'com.github.ybq:Android-SpinKit:1.1.0'
     compile 'cn.jiguang.sdk:jpush:3.0.8'
     compile 'cn.jiguang.sdk:jcore:1.1.6'
     compile 'com.github.lecho:hellocharts-library:1.5.8@aar'
+    compile "com.daimajia.swipelayout:library:1.2.0@aar"
+
+    compile 'cn.bmob.android:bmob-sdk:3.4.5'
+    compile 'com.just.agentweb:agentweb:1.2.6'
+    compile 'devlight.io:navigationtabbar:1.2.5'
+
+
+
+
 }
