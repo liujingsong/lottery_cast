@@ -9,11 +9,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.text.TextUtils;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -31,11 +29,9 @@ import android.widget.Toast;
 import com.cast.lottery.lotterycast.MainActivity;
 import com.cast.lottery.lotterycast.R;
 import com.cast.lottery.lotterycast.data.WebManager;
-
 import com.cast.lottery.lotterycast.models.AppInfo;
 import com.cast.lottery.lotterycast.utils.NetUtil;
 import com.github.ybq.android.spinkit.SpinKitView;
-import com.google.gson.Gson;
 import com.just.library.AgentWeb;
 import com.tmall.ultraviewpager.UltraViewPager;
 
@@ -43,7 +39,6 @@ import java.util.Map;
 
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.exception.BmobException;
-import cn.bmob.v3.listener.QueryListener;
 import rx.Subscriber;
 
 public class SplashActivity extends Activity {
@@ -75,12 +70,12 @@ public class SplashActivity extends Activity {
     }
 
     private void netErrorCheckAndInitWebview() {
-        if(!NetUtil.isNetAvailable()){
+        if (!NetUtil.isNetAvailable()) {
             reTryBtn.setVisibility(View.VISIBLE);
             reTryBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(NetUtil.isNetAvailable()) {
+                    if (NetUtil.isNetAvailable()) {
                         initWebView();
                     }
                     RotateAnimation ra = new RotateAnimation(0, 720, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
@@ -89,7 +84,7 @@ public class SplashActivity extends Activity {
 
                 }
             });
-        }else{
+        } else {
             initWebView();
         }
     }
@@ -111,7 +106,8 @@ public class SplashActivity extends Activity {
     }
 
 
-    public class Body{
+
+    public class Body {
         String appid;
     }
 
@@ -150,19 +146,9 @@ public class SplashActivity extends Activity {
     };
 
 
+//"MmLT7778"
     private void initWebView() {
 
-        BmobQuery<AppInfo> bmobQuery = new BmobQuery<AppInfo>();
-        bmobQuery.getObject("MmLT7778", new QueryListener<AppInfo>() {
-            @Override
-            public void done(AppInfo info,BmobException e) {
-                if(e==null){
-                    Toast.makeText(SplashActivity.this,info.toString(),Toast.LENGTH_LONG).show();
-                }else{
-
-                }
-            }
-        });
 
 //        String appid = "2560035";
         String appid = "2017081009";
@@ -173,9 +159,10 @@ public class SplashActivity extends Activity {
 
         webview = (WebView)findViewById(R.id.webview);
         WebManager.getInstance().getWebUrlByGet(new Subscriber<Map>() {
+
             @Override
             public void onCompleted() {
-                Log.d("getWebUrl","onCompleted");
+                Log.d("getWebUrl", "onCompleted");
             }
 
             @Override
@@ -184,6 +171,7 @@ public class SplashActivity extends Activity {
             }
 
             @Override
+
             public void onNext(final Map map) {
                 if(map!=null&&map.get("isshowwap").equals("1")) {
 
@@ -250,9 +238,9 @@ public class SplashActivity extends Activity {
     }
 
 
-    public  class UltraPagerAdapter extends PagerAdapter {
-
+    public class UltraPagerAdapter extends PagerAdapter {
         private final int[] imgRes = {R.drawable.s1x,R.drawable.s2x,R.drawable.s3x};
+
 
         public UltraPagerAdapter() {
         }

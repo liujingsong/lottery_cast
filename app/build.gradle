@@ -3,7 +3,7 @@ android {
     compileSdkVersion 25
     buildToolsVersion '25.0.0'
     defaultConfig {
-        applicationId "com.cast.lottery.lotterycast3"
+        applicationId "com.cast.lottery.lotterycast5"
         minSdkVersion 15
         targetSdkVersion 23
         versionCode 1
@@ -17,8 +17,8 @@ android {
         }
 
         manifestPlaceholders = [
-                JPUSH_PKGNAME: "com.cast.lottery.lotterycast3",
-                JPUSH_APPKEY : "5174a5ef6d06bfa30bb21cff", //JPush上注册的包名对应的appkey.
+                JPUSH_PKGNAME: "com.cast.lottery.lotterycast5",
+                JPUSH_APPKEY : "f3b176db8e554fbe9a8a169a", //JPush上注册的包名对应的appkey.
                 JPUSH_CHANNEL: "developer-default", //暂时填写默认值即可.
         ]
     }
@@ -66,8 +66,4 @@ dependencies {
     compile 'cn.bmob.android:bmob-sdk:3.4.5'
     compile 'com.just.agentweb:agentweb:1.2.6'
     compile 'devlight.io:navigationtabbar:1.2.5'
-
-
-
-
 }

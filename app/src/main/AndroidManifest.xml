@@ -18,11 +18,11 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
         <activity android:name=".activity.SplashActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN" />-->
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--</intent-filter>-->
         </activity>
         <activity
             android:name=".MainActivity"
@@ -39,7 +39,14 @@
         <activity
             android:name=".activity.HistoryDetailActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".activity.LoginDeviceManager"></activity>
+        <activity android:name=".activity.LoginDeviceManager" />
+        <activity android:name=".activity.SplashActivity2">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
