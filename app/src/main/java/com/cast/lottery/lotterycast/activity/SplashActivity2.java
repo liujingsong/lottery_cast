@@ -40,23 +40,23 @@ public class SplashActivity2 extends AppCompatActivity {
         final ArrayList<NavigationTabBar.Model> models6 = new ArrayList<>();
         models6.add(
                 new NavigationTabBar.Model.Builder(
-                        buildItemNameDrawable("首页"), getResources().getColor(R.color.red2)
-                ).build()
+                        getResources().getDrawable(R.drawable.tab1), getResources().getColor(R.color.red2)
+                ).title("首页").build()
         );
         models6.add(
                 new NavigationTabBar.Model.Builder(
-                        buildItemNameDrawable("返回"), getResources().getColor(R.color.color_nab_normal)
-                ).build()
+                        getResources().getDrawable(R.drawable.tab2), getResources().getColor(R.color.buy_main_bottom_line_color)
+                ).title("返回").build()
         );
         models6.add(
                 new NavigationTabBar.Model.Builder(
-                        buildItemNameDrawable("充值"), getResources().getColor(R.color.red2)
-                ).build()
+                        getResources().getDrawable(R.drawable.tab3), getResources().getColor(R.color.red2)
+                ).title("充值").build()
         );
         models6.add(
                 new NavigationTabBar.Model.Builder(
-                        buildItemNameDrawable("刷新"), getResources().getColor(R.color.color_nab_normal)
-                ).build()
+                        getResources().getDrawable(R.drawable.tab4), getResources().getColor(R.color.buy_main_bottom_line_color)
+                ).title("刷新").build()
         );
         ntbSample6.setModels(models6);
         ntbSample6.setModelIndex(0, true);
