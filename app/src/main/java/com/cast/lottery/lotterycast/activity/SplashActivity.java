@@ -91,21 +91,8 @@ public class SplashActivity extends Activity {
     }
 
 
-
+//"MmLT7778"
     private void initWebView() {
-
-        BmobQuery bmobQuery = new BmobQuery("_User");
-        bmobQuery.getObject(this, "MmLT7778", new GetCallback() {
-            @Override
-            public void onSuccess(JSONObject jsonObject) {
-                Log.d("bmob",new Gson().toJson(jsonObject));
-            }
-
-            @Override
-            public void onFailure(int i, String s) {
-                Log.d("bmob",s);
-            }
-        });
 
         Body body = new Body();
         body.appflag = "0";

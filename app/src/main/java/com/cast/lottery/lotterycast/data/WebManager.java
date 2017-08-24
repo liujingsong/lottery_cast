@@ -1,14 +1,20 @@
 package com.cast.lottery.lotterycast.data;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.cast.lottery.lotterycast.App;
 import com.cast.lottery.lotterycast.utils.CacheUtils;
 import com.cast.lottery.lotterycast.utils.NetUtil;
+import com.google.gson.Gson;
+
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
+import cn.bmob.v3.BmobQuery;
+import cn.bmob.v3.listener.GetCallback;
 import okhttp3.Cache;
 import okhttp3.CacheControl;
 import okhttp3.Interceptor;
@@ -69,5 +75,10 @@ public class WebManager {
     public void getWebUrl(Subscriber subscriber,String body){
         RequestBody requestBody = RequestBody.create(MEDIA_TYPE, body);
         webService.getWebUrl(requestBody).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(subscriber);
+    }
+
+    public void getAppInfo(Context ctx,String tableName,String objectId, GetCallback callback){
+        BmobQuery bmobQuery = new BmobQuery(tableName);
+        bmobQuery.getObject(ctx, objectId,callback);
     }
 }

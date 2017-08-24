@@ -246,4 +246,6 @@
     <color name="color_e53935">#e53935</color>
     <color name="color_424242">#424242</color>
     <color name="color_ffca28">#ffca28</color>
+
+    <color name="color_nab_normal">#4b405c</color>
 </resources>
