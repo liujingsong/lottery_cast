@@ -162,6 +162,7 @@ public class SplashActivity2 extends AppCompatActivity {
                 }else if(index == 1) {
                     agentWeb.back();
                 }else if(index == 2){
+                    agentWeb.getLoader().stopLoading();
                     agentWeb.getLoader().loadUrl(paywebUrl);
                     model.setColor(getResources().getColor(R.color.red2));
                 }else if(index == 3){
