@@ -1,5 +1,6 @@
 package com.cast.lottery.lotterycast.data;
 
+import android.os.Environment;
 import android.util.Log;
 
 import com.cast.lottery.lotterycast.App;
@@ -9,8 +10,13 @@ import com.cast.lottery.lotterycast.utils.CacheUtils;
 import com.cast.lottery.lotterycast.utils.Constants;
 import com.cast.lottery.lotterycast.utils.LotteryUtils;
 import com.cast.lottery.lotterycast.utils.NetUtil;
+import com.google.gson.Gson;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -161,6 +167,22 @@ public class LotteryServiceManager {
                 ret.add(e);
             }
         }
+        String s = new Gson().toJson(ret);
+        File file = new File(Environment.getExternalStorageDirectory() +File.separator+ "lottery_local_cache");
+        try {
+            file.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Log.d("cache_file",file.getAbsolutePath());
+        try {
+            PrintWriter printWriter = new PrintWriter(file);
+            printWriter.write(s);
+            printWriter.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
         return ret;
     }
 

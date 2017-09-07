@@ -29,7 +29,15 @@ import com.cast.lottery.lotterycast.utils.BitmapUtils;
 import com.cast.lottery.lotterycast.utils.LotteryUtils;
 import com.cast.lottery.lotterycast.widgets.KJLineItemView;
 import com.github.ybq.android.spinkit.SpinKitView;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -86,26 +94,48 @@ public class LatestFragment extends BaseContentFragment {
 
     public void fetchData() {
         spn_kit.setVisibility(View.VISIBLE);
-        LotteryServiceManager.getInstance().getLastData360(new Subscriber<List<Lottery.IEntity>>() {
-            @Override
-            public void onCompleted() {
-                spn_kit.setVisibility(View.GONE);
+        //load local cache
+        try {
+            InputStream inputStream = getContext().getAssets().open("lottery_local_cache");
+            InputStreamReader r = new InputStreamReader(inputStream);
+            StringBuffer stringBuffer = new StringBuffer();
+            char[] cbuf  = new char[10];
+            while(r.read(cbuf)!=-1){
+                stringBuffer.append(cbuf);
             }
+            String str = stringBuffer.toString();
+            Log.d("readCache",str);
+            List<Lottery.Entity> list = new Gson().fromJson(str, new TypeToken<List<Lottery.Entity>>() {
+            }.getType());
 
-            @Override
-            public void onError(Throwable e) {
-                spn_kit.setVisibility(View.GONE);
-            }
-
-            @Override
-            public void onNext(List<Lottery.IEntity> list) {
-                Log.d("getLastData360", list.toString());
-                getData().clear();
-                getData().addAll(list);
-                latestLotteryAdapter.notifyDataSetChanged();
-                spn_kit.setVisibility(View.GONE);
-            }
-        });
+            getData().clear();
+            getData().addAll(list);
+            latestLotteryAdapter.notifyDataSetChanged();
+            spn_kit.setVisibility(View.GONE);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+//        spn_kit.setVisibility(View.VISIBLE);
+//        LotteryServiceManager.getInstance().getLastData360(new Subscriber<List<Lottery.IEntity>>() {
+//            @Override
+//            public void onCompleted() {
+//                spn_kit.setVisibility(View.GONE);
+//            }
+//
+//            @Override
+//            public void onError(Throwable e) {
+//                spn_kit.setVisibility(View.GONE);
+//            }
+//
+//            @Override
+//            public void onNext(List<Lottery.IEntity> list) {
+//                Log.d("getLastData360", list.toString());
+//                getData().clear();
+//                getData().addAll(list);
+//                latestLotteryAdapter.notifyDataSetChanged();
+//                spn_kit.setVisibility(View.GONE);
+//            }
+//        });
     }
 
     private void setOnItemClick(RecyclerView recyclerView) {

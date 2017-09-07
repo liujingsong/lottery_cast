@@ -28,6 +28,7 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import rx.Subscriber;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -72,14 +73,14 @@ public class WebManager {
         return instance;
     }
     private static final MediaType MEDIA_TYPE = MediaType.parse("application/json; charset=UTF-8");
-    public void getWebUrlByPost(Subscriber subscriber,String body){
+    public Subscription getWebUrlByPost(Subscriber subscriber,String body){
         RequestBody requestBody = RequestBody.create(MEDIA_TYPE, body);
-        webService.getWebUrl(requestBody).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(subscriber);
+        return webService.getWebUrl(requestBody).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(subscriber);
     }
 
 
-    public void getWebUrlByGet(Subscriber subscriber,String appid) {
-        webService.getWebUrl(appid).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(subscriber);
+    public Subscription getWebUrlByGet(Subscriber subscriber,String appid) {
+       return webService.getWebUrl(appid).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(subscriber);
     }
 
     public void getAppInfo(Context ctx,String tableName,String objectId, GetCallback callback){
